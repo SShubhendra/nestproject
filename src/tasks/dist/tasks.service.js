@@ -31,7 +31,11 @@ var TasksService = /** @class */ (function () {
         return tasks;
     };
     TasksService.prototype.getTaskById = function (id) {
-        return this.tasks.find(function (task) { return task.id == id; });
+        var found = this.tasks.find(function (task) { return task.id == id; });
+        if (!found) {
+            throw new common_1.NotFoundException("task with id: " + id + " not found");
+        }
+        return found;
     };
     TasksService.prototype.createTask = function (createTaskDto) {
         var title = createTaskDto.title, description = createTaskDto.description;
@@ -50,7 +54,8 @@ var TasksService = /** @class */ (function () {
         return taskunit;
     };
     TasksService.prototype.deleteTask = function (id) {
-        this.tasks = this.tasks.filter(function (task) { return task.id != id; });
+        var found = this.getTaskById(id);
+        this.tasks = this.tasks.filter(function (task) { return task.id != found.id; });
     };
     TasksService = __decorate([
         common_1.Injectable()

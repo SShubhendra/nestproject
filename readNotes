@@ -36,3 +36,69 @@ DTO(data transfer obkect):
     -dto are not model,they are reffred to apecific tasks
     -can defined via interface or class
       nestjs use classes , so that it can be reffered in runtime also, as interface won't exist after compilation
+
+Pipes:
+   pipes  operates on the arguments to be processed by the route handler just before the handler is called.
+   pipes can perform data transformation or data validation 
+   pipes can throw exceptions exceptions thrown in the pipe will be handled by nestjs  and then parsed into an error response
+   pipes can be a asynchronous 
+   nestjs pipes are in @nestjs/common module
+   BuildIns:
+      1-ValidationPipe :validates compatibility of entire object against a class (ex DTOs)
+          npm i class-validator class-transformer --save
+          Ex:  1- in DTO:
+                     @IsNotEmpty()
+                     status: TaskStatus;
+               in controller:
+                  @Post()
+                     @UsePipes(ValidationPipe)
+                     createtask(@Body() createTaskDto: CreateTaskDto): CreateTaskDto {
+                        return this.taskservice.createTask(createTaskDto);
+                     }
+            2- DTO:
+                  export class filterDto {
+                  @IsOptional()
+                  @IsIn([TaskStatus.DONE, TaskStatus.IN_PROGRESS, TaskStatus.OPEN])
+                  status: TaskStatus;
+                  @IsOptional()
+                  @IsNotEmpty()
+                  search: string;
+                  }
+               in controller:
+                  @Get()
+                  getTasks(@Query(ValidationPipe) filterObj: filterDto): Task[] { }
+         https://github.com/typestack/class-validator#validation-decorators
+      2-ParseIntPipe :  by default Arguments are of type String.This pipe validates that an argument is a number ,
+         if so the argument will then be transformed into a number  and passed onto the handler
+   customs:
+      custom  pipes are classes that are annotated with the @injectable decorator.
+      pipes must implement the pipeTransform generic interface.Therefore every pipe must have a transform() method.
+      transform() method accepts two parameters :
+          value:  which is the value of the processed arguments and
+          metadata (optional): object containing metadata about the argument 
+         whatever is returned from the transfer method will be passed on to the root handler.
+   Type:
+     1-handler-level:which are defined at the handler level via @UsePipes(somePipe) decorator,
+       process all parameters for the incoming requests.
+          @Post()
+          @UsePipes(somePipe)
+          createtask(@Body() createTaskDto: CreateTaskDto){}
+      2-parameter level : types which are defined in the parameter level.   
+          Only that specific parameter for which the pipe has been specified will be processed.
+           @Post()
+           createtask(@Body('description',somePipe) description){}
+      3-global types:These are defined at the application level and will be applied to any incoming request within the application.
+        async function bootstrap() {
+            const app = await NestFactory.create(AppModule);
+            app.useGlobalPipes(somePipe)
+            await app.listen(3000);
+         }
+
+Eroor exceptions:
+  NotFoundException : 
+    if (!found) {
+      throw new NotFoundException(`task with id: ${id} not found`);
+    }
+   BadRequestException
+      throw new BadRequestException(`satus value ${value} is invalid status`);
+   

@@ -11,6 +11,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 exports.__esModule = true;
 exports.TasksController = void 0;
 var common_1 = require("@nestjs/common");
+var status_pipe_1 = require("./pipes/status.pipe");
 var TasksController = /** @class */ (function () {
     function TasksController(taskservice) {
         this.taskservice = taskservice;
@@ -35,7 +36,7 @@ var TasksController = /** @class */ (function () {
     };
     __decorate([
         common_1.Get(),
-        __param(0, common_1.Query())
+        __param(0, common_1.Query(common_1.ValidationPipe))
     ], TasksController.prototype, "getTasks");
     __decorate([
         common_1.Get('/:id'),
@@ -43,11 +44,12 @@ var TasksController = /** @class */ (function () {
     ], TasksController.prototype, "getTaskById");
     __decorate([
         common_1.Post(),
+        common_1.UsePipes(common_1.ValidationPipe),
         __param(0, common_1.Body())
     ], TasksController.prototype, "createtask");
     __decorate([
         common_1.Patch('/:id'),
-        __param(0, common_1.Body('status')),
+        __param(0, common_1.Body('status', status_pipe_1.statusValidorPipe)),
         __param(1, common_1.Param('id'))
     ], TasksController.prototype, "updateTask");
     __decorate([
