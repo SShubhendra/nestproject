@@ -1,0 +1,38 @@
+Controller:
+   Handles request and responces via handeleres(GET ,POST...) and use  providers via dependency injection.
+   @Contoller('')  - decorator to create controller and bound to a paths.
+   Handlers are methods within controller class (used with decorators as @GET, @POST ...)
+   cli command :  nest g controller tasks 
+
+Providers:
+   can be injected into contructor if decorated as @injectable ,via dependency injection
+   can be plain value, class, sync/async factory etc.
+
+Services:
+   defined as providers , not all providers are Services
+   singleton when wrapped with @injectable() and provided in module.
+    i.e  single instance will be shared across the application
+   cli command :  nest g service tasks
+
+Dependency injection in NestJs
+   Any componnet in application can inject a provider that is decorated with @injectable() via injection with constructor.  
+   It is used to define that a certain class should have a shared instance across the module. 
+     The instance can then be injected using Dependency Injection, and all injectors will have access to the same instance and its state.
+
+Model:
+   can be interface or  class
+     interfaces are TS concept that simply enforces shape of an object on compilation,
+       after compilation interfaces are not preserved unlike classes which are preserved.
+     classes are useful with objects with blueprint and add some self contained functionality via methods
+
+DTO(data transfer obkect):
+   -define the shape of data of incoming request and allow us to reuse definition throught-out application
+
+   -object that carries data b/w processes
+       or
+   -object that used to encapsulate data and send from subsystem of application to other
+      or
+    -object that defines how the data will be sent on network
+    -dto are not model,they are reffred to apecific tasks
+    -can defined via interface or class
+      nestjs use classes , so that it can be reffered in runtime also, as interface won't exist after compilation
